@@ -16,8 +16,8 @@ namespace RibbonBotDAL.Data
 
         public async Task<UserRibbon> GetUserRibbon(long id)
         {
-            var results = await _db.LoadData<UserRibbon, dynamic>("select * from eponaRibbon.userribbon where id = ?i", new { i = id });
-            return results.FirstOrDefault() ?? new UserRibbon();
+            var results = await _db.LoadData<UserRibbon, dynamic>("select * from eponaRibbon.userribbon where id = @id", new { id });
+            return results.FirstOrDefault();
         }
     }
 }

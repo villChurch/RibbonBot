@@ -15,8 +15,8 @@ namespace RibbonBotDAL.Data
 
         public async Task<UserPet> GetUserPet(long id)
         {
-            var results = await _db.LoadData<UserPet, dynamic>("select * from eponaRibbon.userpets where id = ?i", new { i = id});
-            return results.FirstOrDefault() ?? new UserPet();
+            var results = await _db.LoadData<UserPet, dynamic>("select * from eponaRibbon.userpets where id = @id", new { id });
+            return results.FirstOrDefault();
         }
     }
 }

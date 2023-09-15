@@ -20,14 +20,14 @@ namespace RibbonBotDAL.Data
 
         public async Task<Movies> GetMovie(string movie)
         {
-            var result = await _db.LoadData<Movies, dynamic>("select * from eponaRibbon.moives where movie = ?m", new { m = movie });
-            return result.FirstOrDefault() ?? new Movies();
+            var result = await _db.LoadData<Movies, dynamic>("select * from eponaRibbon.moives where movie = @movie", new { movie });
+            return result.FirstOrDefault();
         }
 
         public async Task<Movies> GetMovie(long id)
         {
-            var result = await _db.LoadData<Movies, dynamic>("select * from eponaRibbon.movies where id = ?i", new { i = id});
-            return result.FirstOrDefault() ?? new Movies();
+            var result = await _db.LoadData<Movies, dynamic>("select * from eponaRibbon.movies where id = @id", new { id });
+            return result.FirstOrDefault();
         }
 
         public Task<IEnumerable<Movies>> GetMovies() => _db.LoadData<Movies, dynamic>("select * from eponaRibbon.movies", new { });
