@@ -12,6 +12,8 @@ builder.Services.AddSingleton<IPetsData, PetsData>();
 builder.Services.AddSingleton<IUserPetData, UserPetData>();
 builder.Services.AddSingleton<IRibbonData, RibbonData>();
 builder.Services.AddSingleton<IUserRibbonData, UserRibbonData>();
+builder.Services.AddSingleton<IQodData, QodData>();
+builder.Services.AddSingleton<ITagsData, TagData>();
 
 var app = builder.Build();
 
@@ -27,5 +29,7 @@ app.ConfigurePetsApi();
 app.ConfigureRibbonApi();
 app.ConfigureUserPetApi();
 app.ConfigureUserRibbonApi();
+app.ConfigureQodApi();
+app.ConfigureTagsApi();
 
 app.Run();
