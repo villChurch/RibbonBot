@@ -8,6 +8,6 @@ namespace RibbonBotDAL.Data
 
         Task<Pets> GetPet(long id);
         Task<IEnumerable<DisplayPet>> GetUsersPets(string user);
-        Task<IEnumerable<DisplayPet>> GetUsersPetsById(long petId);
+        Task<DisplayPet> GetUsersPetsById(long petId);
     }
 }

@@ -1,0 +1,70 @@
+﻿@inject IMovieData MovieData
+
+<MudTable Items="@movies" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Movies,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Movies</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Title</MudTh>
+        <MudTh>Watched</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="ID">@context.id</MudTd>
+        <MudTd DataLabel="Title">@context.movie</MudTd>
+        <MudTd DataLabel="Watched">@context.watched.ToString()</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+<div class="d-flex flex-wrap mt-4">
+    <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+    <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+    <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+    <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    <MudSpacer />
+    @*    <div style="min-width:200px;">
+    <MudText Inline="true" Class="align-self-center">Selected: @selectedItem1?.movie</MudText>
+    </div>*@
+</div>
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private string searchString1 = "";
+    private Movies selectedItem1 = null;
+    private HashSet<Movies> selectedItems = new HashSet<Movies>();
+
+
+    private IEnumerable<Movies>? movies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await MovieData.GetMovies();
+    }
+
+    private bool FilterFunc1(Movies movie) => FilterFunc(movie, searchString1);
+
+    private bool FilterFunc(Movies movie, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (movie.movie.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (movie.watched.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    } 
+
+    public async void Refresh()
+    {
+        movies = await MovieData.GetMovies();
+        StateHasChanged();
+    }
+}

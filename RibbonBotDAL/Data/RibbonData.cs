@@ -24,5 +24,9 @@ namespace RibbonBotDAL.Data
             var results  = await _db.LoadData<Ribbon, dynamic>("select * from eponaRibbon.ribbon where name = @rName", new { rName = name });
             return results.FirstOrDefault();
         }
+
+        public Task<IEnumerable<Ribbon>> GetUsersRibbons(string user) => _db.LoadData<Ribbon, dynamic>("select ribbon.id, ribbon.name, ribbon.description, ribbon.path from eponaribbon.ribbon " +
+            "join eponaribbon.userribbon on eponaribbon.ribbon.id = eponaribbon.userribbon.ribbonid " +
+            "where userribbon.userid = @userId", new { userId = user });
     }
 }

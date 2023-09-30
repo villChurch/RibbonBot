@@ -26,9 +26,14 @@ namespace RibbonBotDAL.Data
             "else pets.childlink end path from eponaRibbon.userpets up " +
             "join eponaRibbon.pets pets on pets.id = up.petid where up.owner = @owner", new { owner = user });
 
-        public Task<IEnumerable<DisplayPet>> GetUsersPetsById(long petId) => _db.LoadData<DisplayPet, dynamic>("select up.id, up.name, CASE " +
+        public async Task<DisplayPet> GetUsersPetsById(long petId)
+        {
+            var results = await _db.LoadData<DisplayPet, dynamic>("select up.id, up.name, CASE " +
             "when up.adult = true THEN pets.adultlink " +
             "else pets.childlink end path from eponaRibbon.userpets up " +
             "join eponaRibbon.pets pets on pets.id = up.petid where up.id = @id", new { id = petId });
+
+            return results.First() ?? new DisplayPet();
+        }
     }
 }

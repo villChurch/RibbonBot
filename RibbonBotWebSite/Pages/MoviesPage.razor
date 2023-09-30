@@ -1,0 +1,21 @@
+﻿@page "/movies"
+@using System.ComponentModel.DataAnnotations
+@inject IMovieData MovieData
+@inject ISnackbar Snackbar
+
+<MovieForm ParentMethod="ParentMethod"/>
+<br />
+
+<MovieTable @ref="movieTable"/>
+
+@code {
+
+    private IEnumerable<Movies>? movies;
+    protected MovieTable movieTable;
+
+    private void ParentMethod()
+    {
+        movieTable.Refresh();
+    }
+}
+

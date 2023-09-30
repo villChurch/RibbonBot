@@ -1,0 +1,50 @@
+﻿@page "/profile"
+@inject IRibbonData RibbonData
+@inject IUserRibbonData UserRibbonData
+@inject NavigationManager _navManager
+<h3>Profiles</h3>
+
+@if (users == null)
+{
+    <MudText Typo="Typo.h2">Loading Profiles</MudText>
+}
+else if (users.Count() < 1)
+{
+    <MudText Typo="Typo.h2">There are no profiles to display</MudText>
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" sm="12" md="6" lg="4" xl="4" xxl="4">
+            <MudPaper Class="pa-16 ma-2" Elevation="3">
+                Ribbons
+                <MudList Clickable="true">
+                    @foreach (var user in users)
+                    {
+                        <MudListItem Text="@(user)" OnClick="@(() => _navManager.NavigateTo("/profile/" + user))" />
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="6" lg="4" xl="4" xxl="4">
+            <MudPaper Class="pa-16 ma-2" Elevation="3">
+                Pets
+                <MudList Clickable="true">
+                    @foreach (var user in users)
+                    {
+                        <MudListItem Text="@(user)" OnClick="@(() => _navManager.NavigateTo("/profile/" + user + "/pets"))" />
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    private List<String?> users = new();
+    protected override async Task OnInitializedAsync()
+    {
+        var userList = await UserRibbonData.GetAllUserRibbons();
+        users = userList.Select(x => x.Userid).Distinct().ToList();
+    }
+}

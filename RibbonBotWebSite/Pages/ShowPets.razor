@@ -1,0 +1,18 @@
+﻿@page "/profile/{user}/pets"
+@inject IPetsData PetsData
+
+<h3>Pets</h3>
+
+<PetComponent pets="@(pets == null ? pets : pets.Reverse())" />
+
+@code {
+    [Parameter]
+    public string user { get; set; } = "272151652344266762";
+
+    private IEnumerable<DisplayPet>? pets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pets = await PetsData.GetUsersPets(user);
+    }
+}

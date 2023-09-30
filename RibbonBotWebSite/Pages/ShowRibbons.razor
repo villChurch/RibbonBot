@@ -1,0 +1,20 @@
+﻿@page "/profile/{user}"
+@inject IRibbonData RibbonData
+@using System.Linq
+
+<h3>Ribbons</h3>
+
+<RibbonsComponent ribbons="@(ribbons==null ? ribbons : ribbons.Reverse())" />
+
+@code {
+    [Parameter]
+    public string user { get; set; } = "272151652344266762";
+
+    private IEnumerable<Ribbon>? ribbons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ribbons = await RibbonData.GetUsersRibbons(user);
+    }
+
+}

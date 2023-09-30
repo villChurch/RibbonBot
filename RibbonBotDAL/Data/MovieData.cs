@@ -31,5 +31,7 @@ namespace RibbonBotDAL.Data
         }
 
         public Task<IEnumerable<Movies>> GetMovies() => _db.LoadData<Movies, dynamic>("select * from eponaRibbon.movies", new { });
+
+        public Task AddMovie(string movie) => _db.SaveData("insert into eponaRibbon.movies (movie) values (@movie)", new { movie });
     }
 }

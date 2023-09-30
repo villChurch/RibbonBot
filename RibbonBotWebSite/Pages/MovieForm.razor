@@ -1,0 +1,43 @@
+﻿@using System.ComponentModel.DataAnnotations
+@inject ISnackbar Snackbar
+@inject IMovieData MovieData
+
+
+<MudTextField @bind-Value="movieTitle" Label="Movie" Variant="Variant.Outlined" Required="true"></MudTextField>
+<MudButton Disabled="@processing" OnClick="SubmitMovie" Variant="Variant.Filled" Color="Color.Primary">
+    @if (processing)
+    {
+        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+        <MudText Class="ms-2">Processing</MudText>
+    }
+    else
+    {
+        <MudText>Add Movie</MudText>
+    }
+
+</MudButton>
+<MudSpacer />
+
+
+@code {
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> ParentMethod { get; set; }
+
+    private bool processing = false;
+
+    [Required]
+    public string movieTitle { get; set; }
+
+    private async void SubmitMovie()
+    {
+        processing = true;
+        await MovieData.AddMovie(movieTitle);
+        Snackbar.Add(movieTitle + " added to request list.", Severity.Success);
+        movieTitle = "";
+        processing = false;
+        await ParentMethod.InvokeAsync();
+        //StateHasChanged();
+    }
+
+}
