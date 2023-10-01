@@ -1,0 +1,16 @@
+﻿@page "/pet/add"
+@inject IPetsData PetsData
+@inject NavigationManager _navManager
+@inject ISnackbar Snackbar
+
+<PetForm OnSubmit="HandleValidSubmit" />
+
+@code {
+
+    private async void HandleValidSubmit(Pets pet)
+    {
+        var id = await PetsData.InsertPet(pet);
+        Snackbar.Add($"Pet {pet.id} created!", Severity.Success);
+        _navManager.NavigateTo("/pet/admin/show/" + id);
+    }
+}

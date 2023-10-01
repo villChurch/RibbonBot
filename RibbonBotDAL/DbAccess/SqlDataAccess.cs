@@ -2,6 +2,7 @@
 using Npgsql;
 using Dapper;
 using System.Data;
+using Dapper.Contrib.Extensions;
 
 namespace RibbonBotDAL.DbAccess
 {
@@ -14,6 +15,8 @@ namespace RibbonBotDAL.DbAccess
         {
             _configuration = configuration;
         }
+
+        public NpgsqlConnection GetConnection(string connectionId = "Default") => new NpgsqlConnection(_configuration.GetConnectionString(connectionId));
 
         public async Task<IEnumerable<T>> LoadData<T, U>(string sql, U parameters, CommandType cmdType, string connectionId = "Default")
         {

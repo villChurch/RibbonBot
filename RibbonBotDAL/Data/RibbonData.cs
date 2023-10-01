@@ -1,4 +1,5 @@
-﻿using RibbonBotDAL.DbAccess;
+﻿using Dapper.Contrib.Extensions;
+using RibbonBotDAL.DbAccess;
 using RibbonBotDAL.Model;
 
 namespace RibbonBotDAL.Data
@@ -28,5 +29,11 @@ namespace RibbonBotDAL.Data
         public Task<IEnumerable<Ribbon>> GetUsersRibbons(string user) => _db.LoadData<Ribbon, dynamic>("select ribbon.id, ribbon.name, ribbon.description, ribbon.path from eponaribbon.ribbon " +
             "join eponaribbon.userribbon on eponaribbon.ribbon.id = eponaribbon.userribbon.ribbonid " +
             "where userribbon.userid = @userId", new { userId = user });
+
+        public async Task<long> InsertRibbon(Ribbon ribbon)
+        {
+            using var connection = _db.GetConnection();
+            return await connection.InsertAsync<Ribbon>(ribbon);
+        }
     }
 }

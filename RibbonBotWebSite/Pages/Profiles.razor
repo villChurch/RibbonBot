@@ -7,6 +7,7 @@
 @if (users == null)
 {
     <MudText Typo="Typo.h2">Loading Profiles</MudText>
+    <MudProgressCircular Color="Color.Success" Indeterminate="true" />
 }
 else if (users.Count() < 1)
 {
@@ -41,10 +42,10 @@ else
 }
 
 @code {
-    private List<String?> users = new();
+    private List<String?> users;
     protected override async Task OnInitializedAsync()
     {
         var userList = await UserRibbonData.GetAllUserRibbons();
-        users = userList.Select(x => x.Userid).Distinct().ToList();
+        users = userList.Select(x => x.Userid).Distinct().ToList() ?? new List<String?>();
     }
 }

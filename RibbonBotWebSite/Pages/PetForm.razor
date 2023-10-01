@@ -1,0 +1,53 @@
+﻿<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField @ref="childLink" T="string" Label="Child Image URL" Required="true" RequiredError="Child Image URl required!" />
+                <MudTextField @ref="adultLink" T="string" Label="Adult Image URL" Required="true" RequiredError="Adult Image URL is required!" />
+            </MudForm>
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            @if (isUpdate)
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(submit)">Update Pet</MudButton>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(submit)">Create Pet</MudButton>
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    bool success;
+    string[] errors = { };
+    MudForm form;
+
+    [Parameter]
+    public EventCallback<Pets> OnSubmit { get; set; }
+
+    private MudTextField<string> childLink;
+
+    private MudTextField<string> adultLink;
+
+    private bool isUpdate = false;
+
+    private async void submit()
+    {
+        var pet = new Pets()
+        {
+            childlink = childLink.Value,
+            adultlink = adultLink.Value
+        };
+        await OnSubmit.InvokeAsync(pet);
+    }
+
+    public void SetFormValues(string childLink, string adultLink, bool isFromUpdate = true)
+    {
+        this.childLink.SetText(childLink);
+        this.adultLink.SetText(adultLink);
+        this.isUpdate = isFromUpdate;
+    }
+
+}

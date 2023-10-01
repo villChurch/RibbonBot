@@ -1,0 +1,38 @@
+﻿@page "/pet/edit/{id:long}"
+@inject IPetsData PetsData
+@inject NavigationManager _navManager
+@inject ISnackbar Snackbar
+
+<PetForm @ref="petForm" OnSubmit="HandleValidSubmit" />
+
+@code {
+
+    [Parameter]
+    public long id { get; set; } = 1;
+
+    PetForm petForm;
+
+    Pets currentPet = new Pets();
+    
+    private async void HandleValidSubmit(Pets pet)
+    {
+        pet.id = currentPet.id;
+        var res = await PetsData.UpdatePet(pet);
+        if (res)
+        {
+            Snackbar.Add($"Pet {pet.id} updated!", Severity.Success);
+            _navManager.NavigateTo("/pet/admin/show/" + id);
+        }
+        else
+        {
+            Snackbar.Add($"Pet {pet.id} failed to update!", Severity.Error);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentPet = await PetsData.GetPet(id);
+        petForm.SetFormValues(currentPet.childlink ?? "No url found", currentPet.adultlink ?? "No url found");
+    }
+
+}

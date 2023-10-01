@@ -1,5 +1,6 @@
 ﻿using RibbonBotDAL.DbAccess;
 using RibbonBotDAL.Model;
+using Dapper.Contrib.Extensions;
 
 namespace RibbonBotDAL.Data
 {
@@ -34,6 +35,19 @@ namespace RibbonBotDAL.Data
             "join eponaRibbon.pets pets on pets.id = up.petid where up.id = @id", new { id = petId });
 
             return results.First() ?? new DisplayPet();
+        }
+
+        public async Task<long> InsertPet(Pets pet)
+        {
+            using var connection = _db.GetConnection();
+            return await connection.InsertAsync<Pets>(pet);
+        }
+
+        public async Task<bool> UpdatePet(Pets pet)
+        {
+            using var connection = _db.GetConnection();
+            return await connection.UpdateAsync<Pets>(pet);
+            //return await connection.UpdateAsync(new Pets() { adultlink = pet.adultlink, childlink = pet.childlink, id = pet.id });
         }
     }
 }

@@ -1,14 +1,21 @@
-﻿namespace RibbonBotDAL.Model
+﻿using Dapper.Contrib.Extensions;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace RibbonBotDAL.Model
 {
+    [Dapper.Contrib.Extensions.Table("eponaRibbon.ribbon")]
     public class Ribbon
     {
-
+        [Key]
         public long Id { get; set; }
 
-        public string? Name { get; set; }
+        [Column("name")]
+        public string? name { get; set; }
 
-        public string? Description { get; set; }
+        [Column("description")]
+        public string? description { get; set; }
 
-        public string? Path { get; set; }
+        [Column("path")]
+        public string? path { get; set; }
     }
 }
