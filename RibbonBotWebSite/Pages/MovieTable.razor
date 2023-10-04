@@ -1,6 +1,10 @@
 ﻿@inject IMovieData MovieData
+@inject ISnackbar Snackbar
 
-<MudTable Items="@movies" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Movies,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+<MudTable Items="@movies" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Movies,bool>(FilterFunc1)" ReadOnly="@readOnly"
+    @bind-SelectedItem="selectedItem1" CommitEditTooltip="Save Changes" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+    CanCancelEdit="true" RowEditCommit="Save" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition"
+    EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Movies</MudText>
         <MudSpacer />
@@ -16,11 +20,19 @@
         <MudTd DataLabel="Title">@context.movie</MudTd>
         <MudTd DataLabel="Watched">@context.watched.ToString()</MudTd>
     </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="ID">@context.id</MudTd>
+        <MudTd DataLabel="Title">
+            <MudTextField @bind-Value="@context.movie" Required />
+        </MudTd>
+        <MudTd DataLabel="Watched">
+            <MudCheckBox @bind-Checked="@context.watched"/>
+        </MudTd>
+    </RowEditingTemplate>
     <PagerContent>
-        <MudTablePager />
+        <MudTablePager HideRowsPerPage="true"/>
     </PagerContent>
 </MudTable>
-
 <div class="d-flex flex-wrap mt-4">
     <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
     <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
@@ -37,9 +49,15 @@
     private bool hover = true;
     private bool striped = false;
     private bool bordered = false;
+    private bool readOnly = false;
     private string searchString1 = "";
     private Movies selectedItem1 = null;
+    private Movies movieBeforeEdit;
     private HashSet<Movies> selectedItems = new HashSet<Movies>();
+
+    private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.End;
+    private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
+    private TableEditTrigger editTrigger = TableEditTrigger.RowClick;
 
 
     private IEnumerable<Movies>? movies;
@@ -66,5 +84,31 @@
     {
         movies = await MovieData.GetMovies();
         StateHasChanged();
+    }
+
+    public async void Save(object movie) {
+        var movieToSave = (Movies)movie; 
+        bool success = await MovieData.UpdateMovie(movieToSave);
+        if (success)
+        {
+            Snackbar.Add($"Updated {((Movies)movie).movie}", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add($"Failed to update {((Movies)movie).movie}", Severity.Error);
+        }
+    }
+
+    private void BackupItem(object movie) {
+        movieBeforeEdit = new Movies()
+        {
+            movie = ((Movies)movie).movie,
+            watched = ((Movies)movie).watched
+        };
+    }
+
+    private async void ResetItemToOriginalValues(object movie) {
+        ((Movies)movie).movie = movieBeforeEdit.movie;
+        ((Movies)movie).watched = movieBeforeEdit.watched;
     }
 }

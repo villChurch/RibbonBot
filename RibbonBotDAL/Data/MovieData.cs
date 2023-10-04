@@ -1,10 +1,6 @@
 ﻿using RibbonBotDAL.DbAccess;
 using RibbonBotDAL.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Dapper.Contrib.Extensions;
 
 namespace RibbonBotDAL.Data
 {
@@ -33,5 +29,19 @@ namespace RibbonBotDAL.Data
         public Task<IEnumerable<Movies>> GetMovies() => _db.LoadData<Movies, dynamic>("select * from eponaRibbon.movies", new { });
 
         public Task AddMovie(string movie) => _db.SaveData("insert into eponaRibbon.movies (movie) values (@movie)", new { movie });
+
+        public async Task<bool> UpdateMovie(Movies movie)
+        {
+            try
+            {
+                await _db.SaveData("update eponaRibbon.movies set movie = @movie, watched = @watched where id = @id",
+                    new { movie.movie, movie.watched, movie.id });
+                return true;
+            } catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+        }
     }
 }

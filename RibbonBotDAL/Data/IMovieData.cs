@@ -9,5 +9,7 @@ namespace RibbonBotDAL.Data
         Task<Movies> GetMovie(long id);
 
         Task AddMovie(string movie);
+
+        Task<bool> UpdateMovie(Movies movie);
     }
 }
