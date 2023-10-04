@@ -204,3 +204,6 @@ Thumbs.db
 # AppSettings
 appsettings.json
 appsettings.Development.json
+
+#Rider
+.idea

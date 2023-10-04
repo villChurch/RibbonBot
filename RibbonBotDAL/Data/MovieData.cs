@@ -16,7 +16,7 @@ namespace RibbonBotDAL.Data
 
         public async Task<Movies> GetMovie(string movie)
         {
-            var result = await _db.LoadData<Movies, dynamic>("select * from eponaRibbon.moives where movie = @movie", new { movie });
+            var result = await _db.LoadData<Movies, dynamic>("select * from eponaRibbon.movies where movie = @movie", new { movie });
             return result.FirstOrDefault();
         }
 
