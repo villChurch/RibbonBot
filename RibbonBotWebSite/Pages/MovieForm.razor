@@ -1,6 +1,7 @@
 ﻿@using System.ComponentModel.DataAnnotations
 @inject ISnackbar Snackbar
 @inject IMovieData MovieData
+@attribute [Authorize]
 
 
 <MudTextField @bind-Value="movieTitle" Label="Movie" Variant="Variant.Outlined" Required="true"></MudTextField>

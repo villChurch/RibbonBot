@@ -2,6 +2,7 @@
 @inject IRibbonData RibbonData
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
+@attribute [Authorize]
 
 <RibbonForm @ref="ribbonForm" OnSubmit="HandleValidSubmit" ButtonText="Update Ribbon" />
 

@@ -1,5 +1,6 @@
 ﻿@inject IMovieData MovieData
 @inject ISnackbar Snackbar
+@attribute [Authorize]
 
 <MudTable Items="@movies" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Movies,bool>(FilterFunc1)" ReadOnly="@readOnly"
     @bind-SelectedItem="selectedItem1" CommitEditTooltip="Save Changes" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"

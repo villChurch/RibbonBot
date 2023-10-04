@@ -2,6 +2,7 @@ using MudBlazor.Services;
 using RibbonBotWebSite.Data;
 using RibbonBotDAL.Data;
 using RibbonBotDAL.DbAccess;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,10 @@ builder.Services.AddSingleton<IMovieData, MovieData>();
 builder.Services.AddSingleton<IRibbonData, RibbonData>();
 builder.Services.AddSingleton<IUserRibbonData, UserRibbonData>();
 builder.Services.AddSingleton<IPetsData, PetsData>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<RibbonBotAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(
+    sp => sp.GetRequiredService<RibbonBotAuthenticationStateProvider>());
 
 var app = builder.Build();
 

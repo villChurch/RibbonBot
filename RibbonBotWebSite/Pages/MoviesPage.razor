@@ -1,4 +1,5 @@
 ﻿@page "/movies"
+@attribute [Authorize]
 @using System.ComponentModel.DataAnnotations
 @inject IMovieData MovieData
 @inject ISnackbar Snackbar

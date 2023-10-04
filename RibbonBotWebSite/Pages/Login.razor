@@ -1,0 +1,15 @@
+﻿@page "/Login"
+@using Data
+@inject RibbonBotAuthenticationStateProvider RibbonBotAuthenticationStateProvider
+
+
+<h3>Login</h3>
+<button type="button" class="btn btn-success" @onclick="LoginAsync">Login</button>
+
+@code {
+    //TODO: Add login form
+    public async Task LoginAsync()
+    {
+        await RibbonBotAuthenticationStateProvider.LoginAsync("test", "test");
+    }
+}

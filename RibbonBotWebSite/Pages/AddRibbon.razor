@@ -1,6 +1,7 @@
 ﻿@page "/ribbon/add"
 @inject IRibbonData RibbonData
 @inject NavigationManager _navManager
+@attribute [Authorize]
 
 
 <RibbonForm OnSubmit="HandleValidSubmit" />

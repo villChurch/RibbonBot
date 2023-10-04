@@ -2,6 +2,7 @@
 @inject IPetsData PetsData
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
+@attribute [Authorize]
 
 <PetForm @ref="petForm" OnSubmit="HandleValidSubmit" />
 

@@ -1,13 +1,16 @@
 ﻿@inherits LayoutComponentBase
+@using Data
+@inject RibbonBotAuthenticationStateProvider RibbonBotAuthenticationStateProvider
 
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-
+ @*TODO: Add login button and bool for logout button as well as displaying user logged in*@
 <MudLayout>
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
+        <MudButton OnClick="@(() => RibbonBotAuthenticationStateProvider.LogoutAsync())">Logout</MudButton>
         <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Href="https://mudblazor.com/" Target="_blank" />
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/villChurch" Target="_blank" />
     </MudAppBar>
