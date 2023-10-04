@@ -1,0 +1,39 @@
+﻿@page "/ribbon/edit/{id:long}"
+@inject IRibbonData RibbonData
+@inject NavigationManager _navManager
+@inject ISnackbar Snackbar
+
+<RibbonForm @ref="ribbonForm" OnSubmit="HandleValidSubmit" ButtonText="Update Ribbon" />
+
+@code {
+
+    [Parameter]
+    public long id { get; set; } = 1;
+
+    Ribbon currentRibbon = new Ribbon();
+
+    RibbonForm ribbonForm;
+
+    private async void HandleValidSubmit(Ribbon ribbon)
+    {
+        ribbon.id = currentRibbon.id;
+        var res = await RibbonData.UpdateRibbon(ribbon);
+        if (res)
+        {
+            Snackbar.Add($"Ribbon {ribbon.id} updated!", Severity.Success);
+            _navManager.NavigateTo("/ribbon/" + id);
+        }
+        else
+        {
+            Snackbar.Add($"Ribbon {ribbon.id} failed to update!", Severity.Error);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentRibbon = await RibbonData.GetRibbon(id);
+        ribbonForm.SetFormValues(currentRibbon.name ?? "No name found", currentRibbon.description ?? "No description found",
+            currentRibbon.path ?? "No image path found");
+    }
+
+}

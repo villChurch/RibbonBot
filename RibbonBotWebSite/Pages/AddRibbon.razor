@@ -3,43 +3,13 @@
 @inject NavigationManager _navManager
 
 
-@using System.Text.RegularExpressions
-@using System.ComponentModel.DataAnnotations
-
-<MudGrid>
-    <MudItem xs="12" sm="7">
-        <MudPaper Class="pa-4">
-            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-                <MudTextField @ref="ribbonName" T="string" Label="Ribbon Name" Required="true" RequiredError="Ribbon Name is Required!" />
-                <MudTextField @ref="ribbonDescription" T="string" Label="Ribbon Description" Required="false" />
-                <MudTextField @ref="ribbonPath" T="string" Label="Image URL" Required="true" RequiredError="Image URL is required!" />
-            </MudForm>
-        </MudPaper>
-        <MudPaper Class="pa-4 mt-4">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(submit)">Create Ribbon</MudButton>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+<RibbonForm OnSubmit="HandleValidSubmit" />
 @code {
-    bool success;
-    string[] errors = { };
-    MudForm form;
 
-    private MudTextField<string> ribbonDescription;
-
-    private MudTextField<string> ribbonPath;
-
-    private MudTextField<string> ribbonName;
-
-    private async void submit()
+    private async void HandleValidSubmit(Ribbon ribbon)
     {
-        var ribbon = new Ribbon()
-        {
-            name = ribbonName.Value,
-            description = ribbonDescription.Value ?? "",
-            path = ribbonPath.Value
-        };
-        long id = await RibbonData.InsertRibbon(ribbon);
+        var id = await RibbonData.InsertRibbon(ribbon);
         _navManager.NavigateTo("/ribbon/" + id);
     }
+
 }

@@ -1,0 +1,50 @@
+﻿<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField @ref="ribbonName" T="string" Label="Ribbon Name" Required="true" RequiredError="Ribbon Name is Required!" />
+                <MudTextField @ref="ribbonDescription" T="string" Label="Ribbon Description" Required="false" />
+                <MudTextField @ref="ribbonPath" T="string" Label="Image URL" Required="true" RequiredError="Image URL is required!" />
+            </MudForm>
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(submit)">@(ButtonText)</MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+@code {
+    [Parameter]
+    public EventCallback<Ribbon> OnSubmit { get; set; }
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Create Ribbon";
+
+    bool success;
+    string[] errors = { };
+    MudForm form;
+
+    private MudTextField<string> ribbonDescription;
+
+    private MudTextField<string> ribbonPath;
+
+    private MudTextField<string> ribbonName;
+
+    private async void submit()
+    {
+        var ribbon = new Ribbon()
+        {
+            name = ribbonName.Value,
+            description = ribbonDescription.Value ?? "",
+            path = ribbonPath.Value
+        };
+        await OnSubmit.InvokeAsync(ribbon);
+    }
+
+    public void SetFormValues(string name, string description, string path)
+    {
+        this.ribbonName.SetText(name);
+        this.ribbonDescription.SetText(description);
+        this.ribbonPath.SetText(path);
+    }
+
+}

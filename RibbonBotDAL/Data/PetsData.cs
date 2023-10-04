@@ -47,7 +47,6 @@ namespace RibbonBotDAL.Data
         {
             using var connection = _db.GetConnection();
             return await connection.UpdateAsync<Pets>(pet);
-            //return await connection.UpdateAsync(new Pets() { adultlink = pet.adultlink, childlink = pet.childlink, id = pet.id });
         }
     }
 }

@@ -7,7 +7,7 @@ namespace RibbonBotDAL.Model
     public class Ribbon
     {
         [Key]
-        public long Id { get; set; }
+        public long id { get; set; }
 
         [Column("name")]
         public string? name { get; set; }

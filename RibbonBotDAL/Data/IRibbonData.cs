@@ -18,5 +18,7 @@ namespace RibbonBotDAL.Data
         Task<IEnumerable<Ribbon>> GetUsersRibbons(string user);
 
         Task<long> InsertRibbon(Ribbon ribbon);
+
+        Task<bool> UpdateRibbon(Ribbon ribbon);
     }
 }

@@ -35,5 +35,11 @@ namespace RibbonBotDAL.Data
             using var connection = _db.GetConnection();
             return await connection.InsertAsync<Ribbon>(ribbon);
         }
+
+        public async Task<bool> UpdateRibbon(Ribbon ribbon)
+        {
+            using var connection = _db.GetConnection();
+            return await connection.UpdateAsync<Ribbon>(ribbon);
+        }
     }
 }

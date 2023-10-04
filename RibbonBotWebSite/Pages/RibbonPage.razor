@@ -1,6 +1,11 @@
 ﻿@page "/ribbon/{id:long}"
 @inject IRibbonData RibbonData
 
+<div class="mt-4 flex sm:mt-0 sm:ml-4">
+    <a href="/ribbon/add" class="order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:order-1 sm:ml-3">Create</a>
+    <a href=@($"/ribbon/edit/{ribbon.id}") class="order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:order-1 sm:ml-3">Edit</a>
+    @*<a href=@($"/ribbon/delete/{ribbon.id}") class="order-0 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:order-1 sm:ml-3">Delete</a>*@
+</div>
 <div class="bg-white shadow overflow-hidden sm:rounded-lg">
 <div class="px-4 py-5 sm:px-6">
     <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -16,7 +21,7 @@
             <dt class="text-sm font-medium text-gray-500">
                 Ribbon ID
             </dt>
-            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">@(ribbon.Id)</dd>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">@(ribbon.id)</dd>
         </div>
         <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt class="text-sm font-medium text-gray-500">
