@@ -1,21 +1,51 @@
 ﻿@page "/movies"
 @using System.ComponentModel.DataAnnotations
+@using System.Security.Claims
 @inject IMovieData MovieData
 @inject ISnackbar Snackbar
+@attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<MovieForm ParentMethod="ParentMethod"/>
-<br />
 
-<MovieTable @ref="movieTable"/>
+@if (CurrentUser is not null && CurrentUser.Identity.Name.ToLower().Equals("will@williamspires.com"))
+{
+    <MovieForm ParentMethod="ParentMethod"/>
+    <br/>
+
+    <MovieTable @ref="movieTable"/>
+}
+else
+{
+    <h3>You are not will</h3>
+}
+
+@foreach (var claim in claims)
+        {
+            <p>@claim.Type - @claim.Value</p>
+        }
 
 @code {
 
     private IEnumerable<Movies>? movies;
     protected MovieTable movieTable;
+    private IEnumerable<Claim> claims;
+    private ClaimsPrincipal? CurrentUser;
+
 
     private void ParentMethod()
     {
         movieTable.Refresh();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        CurrentUser = user;
+        if (user.Identity.IsAuthenticated)
+        {
+            claims = user.Claims;
+        }
     }
 }
 
