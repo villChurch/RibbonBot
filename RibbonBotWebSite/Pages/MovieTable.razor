@@ -49,7 +49,10 @@
     private bool hover = true;
     private bool striped = false;
     private bool bordered = false;
-    private bool readOnly = false;
+
+    [Parameter]
+    public bool readOnly { get; set; } = true;
+    
     private string searchString1 = "";
     private Movies selectedItem1 = null;
     private Movies movieBeforeEdit;

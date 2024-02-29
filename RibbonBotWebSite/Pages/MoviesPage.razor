@@ -1,35 +1,27 @@
 ﻿@page "/movies"
-@using System.ComponentModel.DataAnnotations
-@using System.Security.Claims
 @inject IMovieData MovieData
 @inject ISnackbar Snackbar
-@attribute [Authorize]
-@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IHttpContextAccessor httpContextAccessor;
+@inject IUserData UserData
 
 
-@if (CurrentUser is not null && CurrentUser.Identity.Name.ToLower().Equals("will@williamspires.com"))
+<MovieForm ParentMethod="ParentMethod"/>
+<br/>
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
 {
-    <MovieForm ParentMethod="ParentMethod"/>
-    <br/>
-
-    <MovieTable @ref="movieTable"/>
+    <MovieTable @ref="movieTable" readonly="@(false)"/>
 }
 else
 {
-    <h3>You are not will</h3>
+    <MovieTable @ref="movieTable" readonly="@(true)"/>
 }
 
-@foreach (var claim in claims)
-        {
-            <p>@claim.Type - @claim.Value</p>
-        }
 
 @code {
 
     private IEnumerable<Movies>? movies;
     protected MovieTable movieTable;
-    private IEnumerable<Claim> claims;
-    private ClaimsPrincipal? CurrentUser;
+    private User? _user;
 
 
     private void ParentMethod()
@@ -39,12 +31,14 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        CurrentUser = user;
-        if (user.Identity.IsAuthenticated)
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
         {
-            claims = user.Claims;
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"];
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
         }
     }
 }

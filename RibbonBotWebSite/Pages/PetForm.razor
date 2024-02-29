@@ -26,6 +26,9 @@
 
     [Parameter]
     public EventCallback<Pets> OnSubmit { get; set; }
+    
+    [Parameter]
+    public Pets? currentPet { get; set; }
 
     private MudTextField<string> childLink;
 
@@ -48,6 +51,14 @@
         this.childLink.SetText(childLink);
         this.adultLink.SetText(adultLink);
         this.isUpdate = isFromUpdate;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (currentPet != null)
+        {
+            SetFormValues(currentPet.childlink ?? "No url found", currentPet.adultlink ?? "No url found");
+        }
     }
 
 }

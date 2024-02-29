@@ -11,4 +11,6 @@ public class User
     
     public string role { get; set; } = "user"; 
     
+    public string discordid { get; set; }
+    
 }

@@ -27,6 +27,20 @@ public class UserData : IUserData
 
     public Task<IEnumerable<User>> GetAllUsers() => _db.LoadData<User, dynamic>("select * from eponaRibbon.users", new { });
     
-    public Task SaveUser(User user) => _db.SaveData("insert into eponaRibbon.users (name, role) values (@name, @role)", 
-        new { user.name, user.role});
+    public Task SaveUser(User user) => _db.SaveData("insert into eponaRibbon.users (name, role, discordid) values (@name, @role, @discordId)", 
+        new { user.name, user.role, discordId = user.discordid ?? ""});
+    
+    public async Task<User> CheckForUser(IUserData UserData, string userName)
+    {
+        User saveuser;
+        saveuser = await UserData.GetUserByName(userName) ?? null;
+        if (saveuser is null)
+        {
+            saveuser = new User();
+            saveuser.name = userName;
+            await UserData.SaveUser(saveuser);
+        }
+
+        return saveuser;
+    }
 }

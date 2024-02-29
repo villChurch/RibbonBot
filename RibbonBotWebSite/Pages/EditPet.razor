@@ -2,8 +2,18 @@
 @inject IPetsData PetsData
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
+@inject IUserData UserData
+@inject IHttpContextAccessor httpContextAccessor;
 
-<PetForm @ref="petForm" OnSubmit="HandleValidSubmit" />
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <PetForm @ref="petForm" OnSubmit="HandleValidSubmit" currentPet="currentPet" />    
+}
+else
+{
+    <MudText Typo="Typo.h4">You are not authorized to view this page.</MudText>
+}
+
 
 @code {
 
@@ -12,7 +22,9 @@
 
     PetForm petForm;
 
-    Pets currentPet = new Pets();
+    Pets currentPet;
+
+    private User? _user;
     
     private async void HandleValidSubmit(Pets pet)
     {
@@ -32,7 +44,15 @@
     protected override async Task OnInitializedAsync()
     {
         currentPet = await PetsData.GetPet(id);
-        petForm.SetFormValues(currentPet.childlink ?? "No url found", currentPet.adultlink ?? "No url found");
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
     }
 
 }

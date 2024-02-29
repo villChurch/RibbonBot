@@ -1,0 +1,40 @@
+﻿@page "/admin/users/manage"
+@inject HttpContextAccessor httpContextAccessor
+@inject IUserData Userdata
+
+<MudText Typo="Typo.h3">Manage Users</MudText>
+
+@if (_currentUser is not null && _currentUser.role.ToLower().Equals("admin"))
+{
+    
+}
+else
+{
+    <MudText Typo="Typo.h3">Not authorised.</MudText>
+}
+
+
+@code {
+
+    private IEnumerable<User>? _users;
+    private User? _currentUser;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _currentUser = await Userdata.CheckForUser(Userdata, email);
+        }
+        if (_currentUser!.role.ToLower().Equals("admin"))
+        {
+            _users = await Userdata.GetAllUsers();
+        }
+    }
+
+}

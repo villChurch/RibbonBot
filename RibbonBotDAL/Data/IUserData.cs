@@ -9,4 +9,6 @@ public interface IUserData
     Task<IEnumerable<User>> GetAllUsers();
     
     Task SaveUser(User user);
+    
+    Task<User> CheckForUser(IUserData UserData, string userName);
 }

@@ -1,6 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject ILoginStatus status
-@using RibbonBotWebSite.Components
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -10,9 +8,11 @@
     <MudAppBar Elevation="0">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
-        <DynamicComponent Type="@status.GetType()" />
         <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Href="https://mudblazor.com/" Target="_blank" />
         <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/villChurch" Target="_blank" />
+        <AuthorizeView>
+            <MudIconButton Icon="@Icons.Material.Rounded.Person" Href="/user/profile"/>
+        </AuthorizeView>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
         <MudDrawerHeader>

@@ -1,0 +1,22 @@
+﻿@page "/user/profile"
+@inject HttpContextAccessor httpContextAccessor
+@inject IUserData UserData
+
+<MudText Typo="Typo.h2">Welcome @(_user.name) - Coming soon!</MudText>
+
+@code {
+    private User? _user;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
+    }
+}
