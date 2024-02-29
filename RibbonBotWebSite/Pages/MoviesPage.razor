@@ -1,21 +1,45 @@
 ﻿@page "/movies"
-@using System.ComponentModel.DataAnnotations
 @inject IMovieData MovieData
 @inject ISnackbar Snackbar
+@inject IHttpContextAccessor httpContextAccessor;
+@inject IUserData UserData
+
 
 <MovieForm ParentMethod="ParentMethod"/>
-<br />
+<br/>
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <MovieTable @ref="movieTable" readonly="@(false)"/>
+}
+else
+{
+    <MovieTable @ref="movieTable" readonly="@(true)"/>
+}
 
-<MovieTable @ref="movieTable"/>
 
 @code {
 
     private IEnumerable<Movies>? movies;
     protected MovieTable movieTable;
+    private User? _user;
+
 
     private void ParentMethod()
     {
         movieTable.Refresh();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"];
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
     }
 }
 

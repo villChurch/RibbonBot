@@ -17,6 +17,9 @@
     public EventCallback<Ribbon> OnSubmit { get; set; }
 
     [Parameter]
+    public Ribbon? currentRibbon { get; set; }
+
+    [Parameter]
     public string ButtonText { get; set; } = "Create Ribbon";
 
     bool success;
@@ -45,6 +48,15 @@
         this.ribbonName.SetText(name);
         this.ribbonDescription.SetText(description);
         this.ribbonPath.SetText(path);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (currentRibbon != null)
+        {
+            SetFormValues(currentRibbon.name ?? "No name found", currentRibbon.description ?? "No description found",
+                currentRibbon.path ?? "No image path found");
+        }
     }
 
 }

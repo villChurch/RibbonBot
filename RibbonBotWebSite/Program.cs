@@ -1,5 +1,7 @@
+using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using MudBlazor.Services;
-using RibbonBotWebSite.Data;
 using RibbonBotDAL.Data;
 using RibbonBotDAL.DbAccess;
 
@@ -14,6 +16,8 @@ builder.Services.AddSingleton<IMovieData, MovieData>();
 builder.Services.AddSingleton<IRibbonData, RibbonData>();
 builder.Services.AddSingleton<IUserRibbonData, UserRibbonData>();
 builder.Services.AddSingleton<IPetsData, PetsData>();
+builder.Services.AddSingleton<IUserData, UserData>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -27,6 +31,9 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

@@ -2,15 +2,39 @@
 @inject IPetsData PetsData
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
+@inject IUserData UserData
+@inject IHttpContextAccessor httpContextAccessor;
 
-<PetForm OnSubmit="HandleValidSubmit" />
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <PetForm OnSubmit="HandleValidSubmit" />   
+}
+else
+{
+    <MudText Typo="Typo.h4">You are not authorized to add a pet.</MudText>
+}
 
 @code {
 
+    private User? _user;
+    
     private async void HandleValidSubmit(Pets pet)
     {
         var id = await PetsData.InsertPet(pet);
         Snackbar.Add($"Pet {pet.id} created!", Severity.Success);
         _navManager.NavigateTo("/pet/admin/show/" + id);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
     }
 }

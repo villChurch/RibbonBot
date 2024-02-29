@@ -1,15 +1,38 @@
 ﻿@page "/ribbon/add"
 @inject IRibbonData RibbonData
 @inject NavigationManager _navManager
+@inject IUserData UserData
+@inject IHttpContextAccessor httpContextAccessor;
 
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <RibbonForm OnSubmit="HandleValidSubmit" />    
+}
+else
+{
+    <MudText Typo="Typo.h4">You are not authorized to add ribbons.</MudText>
+}
 
-<RibbonForm OnSubmit="HandleValidSubmit" />
 @code {
 
+    private User? _user;
+    
     private async void HandleValidSubmit(Ribbon ribbon)
     {
         var id = await RibbonData.InsertRibbon(ribbon);
         _navManager.NavigateTo("/ribbon/" + id);
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
+    }
 }

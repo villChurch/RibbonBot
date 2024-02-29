@@ -2,17 +2,29 @@
 @inject IRibbonData RibbonData
 @inject NavigationManager _navManager
 @inject ISnackbar Snackbar
+@inject IUserData UserData
+@inject IHttpContextAccessor httpContextAccessor;
 
-<RibbonForm @ref="ribbonForm" OnSubmit="HandleValidSubmit" ButtonText="Update Ribbon" />
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <RibbonForm @ref="ribbonForm" OnSubmit="HandleValidSubmit" ButtonText="Update Ribbon" currentRibbon="currentRibbon"/>
+}
+else
+{
+    <MudText Typo="Typo.h4">You are not authorized to view this page.</MudText>
+}
+
 
 @code {
 
     [Parameter]
     public long id { get; set; } = 1;
 
-    Ribbon currentRibbon = new Ribbon();
+    Ribbon currentRibbon;
 
     RibbonForm ribbonForm;
+
+    private User? _user;
 
     private async void HandleValidSubmit(Ribbon ribbon)
     {
@@ -31,9 +43,20 @@
 
     protected override async Task OnInitializedAsync()
     {
-        currentRibbon = await RibbonData.GetRibbon(id);
-        ribbonForm.SetFormValues(currentRibbon.name ?? "No name found", currentRibbon.description ?? "No description found",
-            currentRibbon.path ?? "No image path found");
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
+
+        if (_user is not null && _user.role.ToLower().Equals("admin"))
+        {
+            currentRibbon = await RibbonData.GetRibbon(id);
+        }
     }
 
 }
