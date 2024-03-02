@@ -1,11 +1,38 @@
 ﻿@page "/user/profile"
-@inject HttpContextAccessor httpContextAccessor
+@inject IHttpContextAccessor httpContextAccessor
 @inject IUserData UserData
+@inject IUserLinkData UserLinkData
+@inject ISnackbar Snackbar
 
-<MudText Typo="Typo.h2">Welcome @(_user.name) - Coming soon!</MudText>
+
+@if (_loading)
+{
+    <MudProgressCircular Color="Color.Success" Indeterminate="true" />
+}
+else if (_user.discordid == null || _user.discordid.Length < 1)
+{
+    <MudPaper class="pa-16 ma-2" Elevation="3">
+        <MudForm @ref="_form">
+            <MudText>To link your discord account enter your code from RibbonBot and click the button below</MudText>
+            <MudTextField @ref="_code" T="string" Label="Code from RibbonBot" Required="true" RequiredError="Code must be present"/>
+            <MudSpacer/>
+            <br/>
+            <div style="text-align: center;">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(Submit)">Link Discord Account</MudButton>
+            </div>
+        </MudForm>
+    </MudPaper>
+}
+else
+{
+    <MudText>You have already linked your discord account. More is coming soon!</MudText>
+}
 
 @code {
     private User? _user;
+    private MudTextField<string> _code;
+    private MudForm _form;
+    private bool _loading = true;
     
     protected override async Task OnInitializedAsync()
     {
@@ -17,6 +44,26 @@
         if (email.Length > 0)
         {
             _user = await UserData.CheckForUser(UserData, email);
+        }
+
+        _loading = false;
+    }
+
+    private async void Submit()
+    {
+        var userLink = await UserLinkData.GetUserLinkByCode(_code.Value);
+        if (userLink is null)
+        {
+            Snackbar.Add("Incorrect code", Severity.Error);
+            await _form.ResetAsync();
+        }
+        else
+        {
+            _user.discordid = userLink.discordid;
+            await UserData.UpdateUser(_user);
+            await UserLinkData.DeleteUserLink(userLink);
+            Snackbar.Add("Account linked");
+            await _form.ResetAsync();
         }
     }
 }

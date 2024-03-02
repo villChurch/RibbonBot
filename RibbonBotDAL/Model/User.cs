@@ -2,6 +2,7 @@ using Dapper.Contrib.Extensions;
 
 namespace RibbonBotDAL.Model;
 
+[Table("eponaRibbon.users")]
 public class User
 {
     [Key]

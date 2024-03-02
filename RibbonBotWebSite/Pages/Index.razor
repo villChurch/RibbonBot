@@ -1,26 +1,4 @@
 ﻿@page "/"
 @inject IHttpContextAccessor httpContextAccessor;
 
-
-@* @foreach (var header in httpContextAccessor.HttpContext.Request.Headers) *@
-@*   { *@
-@*       <br/> *@
-@*       <p>@($"{header.Key} - {header.Value}")</p> *@
-@*   } *@
-
-<PageTitle>Index</PageTitle>
-
-<button @onclick="GetClaimsPrincipalData">Get Email</button>
-
-<p>@_email</p>
-
-
-@code {
-    private string? _email;
-    // X-Forwarded-Email
-    
-    private async Task GetClaimsPrincipalData()
-    {
-        _email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"];
-    }
-}
+<Profiles/>

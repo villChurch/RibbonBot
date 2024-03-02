@@ -9,5 +9,8 @@ namespace RibbonBotDAL.DbAccess
         Task SaveData<T>(string sql, T parameters, CommandType cmdType = CommandType.Text, string connectionId = "Default");
 
         NpgsqlConnection GetConnection(string connectionId = "Default");
+
+        Task DeleteData<T>(string sql, T parameters, CommandType cmdType = CommandType.Text,
+            string connectionId = "Default");
     }
 }
