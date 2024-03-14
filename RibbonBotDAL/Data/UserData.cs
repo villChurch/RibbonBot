@@ -1,3 +1,4 @@
+using Dapper.Contrib.Extensions;
 using RibbonBotDAL.DbAccess;
 using RibbonBotDAL.Model;
 
@@ -42,5 +43,11 @@ public class UserData : IUserData
         }
 
         return saveuser;
+    }
+
+    public async Task<bool> UpdateUser(User user)
+    {
+        await using var connection = _db.GetConnection();
+        return await connection.UpdateAsync<User>(user);
     }
 }

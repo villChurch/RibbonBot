@@ -11,4 +11,6 @@ public interface IUserData
     Task SaveUser(User user);
     
     Task<User> CheckForUser(IUserData UserData, string userName);
+
+    Task<bool> UpdateUser(User user);
 }

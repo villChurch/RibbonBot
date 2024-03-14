@@ -17,6 +17,7 @@ builder.Services.AddSingleton<IRibbonData, RibbonData>();
 builder.Services.AddSingleton<IUserRibbonData, UserRibbonData>();
 builder.Services.AddSingleton<IPetsData, PetsData>();
 builder.Services.AddSingleton<IUserData, UserData>();
+builder.Services.AddSingleton<IUserLinkData, UserLinkData>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
