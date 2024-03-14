@@ -1,4 +1,55 @@
 ﻿@page "/"
-@inject IHttpContextAccessor httpContextAccessor;
+<MudItem xs="16" sm="10">
+    <MudPaper Class="pa-md-6 mx-lg-auto ">
+        <MudText Typo="Typo.h1">Welcome!</MudText>
+        <br/>
+        <MudText Typo="Typo.body1">Use the Profiles page to find your Ribbons & Pets, listed by DiscordID.</MudText>
+        <br/>
+        <MudText Typo="Typo.body1">Use the Profiles page to find your Ribbons & Pets, listed by DiscordID.</MudText>
+        <br/>
+        <MudText Typo="Typo.body1">Link your website account with your Discord account by using the command /website link on the Discord server, and inputting the code it gives you via the icon on the top right.</MudText>
 
-<Profiles/>
+        <br/>
+        <MudText Typo="Typo.h2">Discord Commands</MudText>
+        <br/>
+        <MudPaper Class="pa-4 mr-16">
+            <MudText Typo="Typo.h3">Glimpse-a-Gazelle</MudText>
+            <MudList Clickable="false">
+                <MudListItem Text="/eye_spy profile - displays the amount of points you have."/>
+                <MudListItem Text="/eye_spy leaderboard - displays the leaderboard."></MudListItem>
+            </MudList>
+        </MudPaper>
+        <br/>
+        <MudPaper Class="pa-4 mr-16">
+            <MudText Typo="Typo.h3">Movie Requests</MudText>
+            <MudList Clickable="false">
+                <MudListItem Text="/movie request - submits a new suggestion to the Movies list."/>
+                <MudListItem Text="/movie show - shows all movie requests on the list."/>
+            </MudList>
+        </MudPaper>
+        <br/>
+        <MudPaper Class="pa-4 mr-16">
+            <MudText Typo="Typo.h3">Pet Eggs</MudText>
+            <MudList Clickable="false">
+                <MudListItem Text="/pet show - shows your pets."/>
+                <MudListItem Text="/pet name - name your pet using the ID."/>
+                <MudListItem Text="/pet release - remove a pet using the ID."/>
+                <MudListItem Text="/pet trade - give a pet to another player using the ID."/>
+            </MudList>
+        </MudPaper>
+        <br/>
+        <MudPaper Class="pa-4 mr-16">
+            <MudText Typo="Typo.h3">Award Board</MudText>
+            <MudList Clickable="false">
+                <MudListItem Text="/profile - show a player’s Award Board."/>
+            </MudList>
+        </MudPaper>
+        <br/>
+        <MudPaper Class="pa-4 mr-16">
+            <MudText Typo="Typo.h3">Website</MudText>
+            <MudList Clickable="false">
+                <MudListItem Text="/website link - generate a code to link your website and Discord accounts."/>
+            </MudList>
+        </MudPaper>
+    </MudPaper>
+</MudItem>
