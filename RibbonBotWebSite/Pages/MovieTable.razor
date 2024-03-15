@@ -30,7 +30,6 @@
         </MudTd>
     </RowEditingTemplate>
     <PagerContent>
-        @* <MudTablePager HideRowsPerPage="true"/> *@
         @if (movies != null)
         {
             <MudTablePager PageSizeOptions="@(new int[]{movies.Count(), 10, 50, 100})"/>
