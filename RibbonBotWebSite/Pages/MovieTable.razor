@@ -11,9 +11,9 @@
         <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>ID</MudTh>
-        <MudTh>Title</MudTh>
-        <MudTh>Watched</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Movies, object>(x => x.id)">ID</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Movies, object>(x => x.movie)">Title</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Movies, object>(x => x.watched)">Watched</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="ID">@context.id</MudTd>
@@ -46,9 +46,6 @@
     <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
     <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
     <MudSpacer />
-    @*    <div style="min-width:200px;">
-    <MudText Inline="true" Class="align-self-center">Selected: @selectedItem1?.movie</MudText>
-    </div>*@
 </div>
 
 @code {
