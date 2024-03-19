@@ -10,6 +10,8 @@ namespace RibbonBotDAL.Data
 
         Task AddMovie(string movie);
 
+        Task AddMovie(string movie, bool afterDark);
+
         Task<bool> UpdateMovie(Movies movie);
     }
 }

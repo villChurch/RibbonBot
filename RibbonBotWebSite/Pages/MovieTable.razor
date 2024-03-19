@@ -14,11 +14,13 @@
         <MudTh><MudTableSortLabel SortBy="new Func<Movies, object>(x => x.id)">ID</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<Movies, object>(x => x.movie)">Title</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<Movies, object>(x => x.watched)">Watched</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Movies, object?>(x => x.genre)">Genre</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="ID">@context.id</MudTd>
         <MudTd DataLabel="Title">@context.movie</MudTd>
         <MudTd DataLabel="Watched">@context.watched.ToString()</MudTd>
+        <MudTd DataLabel="Genre">@context.genre</MudTd>
     </RowTemplate>
     <RowEditingTemplate>
         <MudTd DataLabel="ID">@context.id</MudTd>
