@@ -2,8 +2,18 @@
 @inject ISnackbar Snackbar
 @inject IMovieData MovieData
 
-
-<MudTextField @bind-Value="movieTitle" Label="Movie" Variant="Variant.Outlined" Required="true"></MudTextField>
+<MudPaper>
+    <MudGrid>
+        <MudItem xs="6">
+            <MudTextField @bind-Value="movieTitle" Label="Movie" Variant="Variant.Outlined" Required="true"></MudTextField>
+        </MudItem>
+        <MudItem xs="6">
+            <MudSwitch T="bool" @bind-Checked="afterDark" Label="After Dark" Color="Color.Success"/>
+        </MudItem>
+    </MudGrid>
+</MudPaper>
+<br/>
+<MudSpacer/>
 <MudButton Disabled="@processing" OnClick="SubmitMovie" Variant="Variant.Filled" Color="Color.Primary">
     @if (processing)
     {
@@ -25,6 +35,7 @@
     public EventCallback<MouseEventArgs> ParentMethod { get; set; }
 
     private bool processing = false;
+    public bool afterDark { get; set; } = false;
 
     [Required]
     public string movieTitle { get; set; }
@@ -32,12 +43,18 @@
     private async void SubmitMovie()
     {
         processing = true;
-        await MovieData.AddMovie(movieTitle);
+        if (afterDark)
+        {
+            await MovieData.AddMovie(movieTitle, afterDark);
+        }
+        else
+        {
+            await MovieData.AddMovie(movieTitle);   
+        }
         Snackbar.Add(movieTitle + " added to request list.", Severity.Success);
         movieTitle = "";
         processing = false;
         await ParentMethod.InvokeAsync();
-        //StateHasChanged();
     }
 
 }

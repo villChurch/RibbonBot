@@ -29,6 +29,18 @@ namespace RibbonBotDAL.Data
         public Task<IEnumerable<Movies>> GetMovies() => _db.LoadData<Movies, dynamic>("select * from eponaRibbon.movies", new { });
 
         public Task AddMovie(string movie) => _db.SaveData("insert into eponaRibbon.movies (movie) values (@movie)", new { movie });
+        public async Task AddMovie(string movie, bool afterDark)
+        {
+            if (afterDark)
+            {
+                const string genre = "After Dark";
+                await _db.SaveData("insert into eponaRibbon.movies (movie, genre) values (@movie, @genre)", new { movie, genre });
+            }
+            else
+            {
+                await AddMovie(movie);
+            }
+        }
 
         public async Task<bool> UpdateMovie(Movies movie)
         {
