@@ -1,0 +1,86 @@
+﻿@page "/Ribbon/all"
+@inject IRibbonData ribbonData
+@inject NavigationManager navigationManager
+@inject IUserData UserData
+@inject IHttpContextAccessor httpContextAccessor;
+
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Ribbon, bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1"
+              OnRowClick="@RowClicked" T="Ribbon">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Ribbons</MudText>
+            <MudSpacer/>
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Ribbon, object?>(x => x.id)">Ribbon ID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Ribbon, object?>(x => x.name)">Ribbon Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Ribbon, object?>(x => x.description)">Ribbon Description</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Ribbon ID">@context.id</MudTd>
+            <MudTd DataLabel="Ribbon Name">@context.name</MudTd>
+            <MudTd DataLabel="Ribbon Description">@context.description</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
+    </MudTable>
+}
+else
+{
+  <MudText Typo="Typo.h4">You are not authorized to view this page.</MudText>
+}
+
+<div class="d-flex flex-wrap mt-4">
+    <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+    <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+    <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+    <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    <MudSpacer />
+</div>
+@code {
+    private bool dense;
+    private bool hover = true;
+    private bool striped;
+    private bool bordered;
+    private string searchString1 = "";
+    private Ribbon selectedItem1;
+    private HashSet<Ribbon> selectedItems = new();
+    private User? _user;
+
+    private IEnumerable<Ribbon> Elements = new List<Ribbon>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Elements = await ribbonData.GetAllRibbons();
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
+    }
+
+    private bool FilterFunc1(Ribbon element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(Ribbon element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.name != null && element.name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.description != null && element.description.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    private void RowClicked(TableRowClickEventArgs<Ribbon> tableRowClickEventArgs)
+    {
+        navigationManager.NavigateTo("/ribbon/" + tableRowClickEventArgs.Item.id);
+    }
+}
