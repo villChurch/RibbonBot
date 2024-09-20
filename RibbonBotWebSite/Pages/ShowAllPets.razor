@@ -1,0 +1,94 @@
+﻿@page "/Pets/all"
+@inject IPetsData petData
+@inject NavigationManager navigationManager
+@inject IUserData UserData
+@inject IHttpContextAccessor httpContextAccessor
+
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Pets, bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1"
+              OnRowClick="@RowClicked" T="Pets">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Ribbons</MudText>
+            <MudSpacer/>
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<Pets, object?>(x => x.id)">Pet ID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Pets, object?>(x => x.childlink)">Child Link</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Pets, object?>(x => x.adultlink)">Adult Link</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Pet ID">@context.id</MudTd>
+            <MudTd DataLabel="Child Link">@context.childlink</MudTd>
+            <MudTd DataLabel="Adult Link">@context.adultlink</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager/>
+        </PagerContent>
+    </MudTable>
+}
+else
+{
+  <MudText Typo="Typo.h4">You are not authorized to view this page.</MudText>
+}
+
+<div class="d-flex flex-wrap mt-4">
+    <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+    <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+    <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+    <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    <MudSpacer />
+</div>
+
+@code {
+    private bool dense;
+    private bool hover = true;
+    private bool striped;
+    private bool bordered;
+
+    private string searchString1;
+    private Pets selectedItem1;
+
+    private User? _user;
+
+    private IEnumerable<Pets> Elements = new List<Pets>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+
+        if (email.Length > 0)
+        {
+            _user = await UserData.CheckForUser(UserData, email);
+        }
+
+        Elements = await petData.GetAllPets();
+    }
+
+    private bool FilterFunc1(Pets element) => FilterFunc1(element, searchString1);
+
+    private bool FilterFunc1(Pets element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString1))
+            return true;
+        if (element.childlink != null && element.childlink.Contains(searchString, StringComparison.CurrentCultureIgnoreCase))
+            return true;
+        if (element.adultlink != null && element.adultlink.Contains(searchString, StringComparison.CurrentCultureIgnoreCase))
+            return true;
+        if (element.id.Equals(searchString))
+            return true;
+
+        return false;
+    }
+
+    private void RowClicked(TableRowClickEventArgs<Pets> tableRowClickEventArgs)
+    {
+        navigationManager.NavigateTo($"/pet/admin/show/{tableRowClickEventArgs.Item.id}");
+    }
+
+}
