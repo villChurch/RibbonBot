@@ -7,6 +7,15 @@
 
 <MovieForm ParentMethod="ParentMethod"/>
 <br/>
+<MudGrid>
+    <MudItem xs="6">
+        <MudButton OnClick="RandomMovie" Variant="Variant.Filled" Color="Color.Primary">Random Movie</MudButton>
+    </MudItem>
+    <MudItem xs="6">
+        <MudSwitch T="bool" @bind-Checked="_afterDark" Label="After Dark" Color="Color.Success"/>
+    </MudItem>
+</MudGrid>
+
 @if (_user is not null && _user.role.ToLower().Equals("admin"))
 {
     <MovieTable @ref="movieTable" readonly="@(false)"/>
@@ -22,6 +31,7 @@ else
     private IEnumerable<Movies>? movies;
     protected MovieTable movieTable;
     private User? _user;
+    bool _afterDark = false;
 
 
     private void ParentMethod()
@@ -36,10 +46,36 @@ else
         {
             email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"];
         }
-        if (email.Length > 0)
+        if (email?.Length > 0)
         {
             _user = await UserData.CheckForUser(UserData, email);
         }
     }
+
+    private async void RandomMovie()
+    {
+        movies = await MovieData.GetMovies();
+        var movieList = new List<Movies>();
+        foreach (var movie in movies)
+        {
+            if (movie.genre is null)
+            {
+                movie.genre = "Community";
+            }
+            movieList.Add(movie);
+        }
+        movieList = movieList.Where(x => x.watched == false && x.genre?.Equals("After Dark", StringComparison.CurrentCultureIgnoreCase) == _afterDark).ToList();
+        if (movieList.Count < 1)
+        {
+            Snackbar.Add("There are no movies", Severity.Warning);
+        }
+        else
+        {
+            var numOfMovies = movieList.Count;
+            var randomMovieNumber = new Random().Next(numOfMovies);
+            Snackbar.Add(movieList[randomMovieNumber].movie, Severity.Success);
+        }
+    }
+    
 }
 
