@@ -1,4 +1,3 @@
-using RibbonBotDAL.Data;
 using RibbonBotMinimalAPI.API;
 var builder = WebApplication.CreateBuilder(args);
 

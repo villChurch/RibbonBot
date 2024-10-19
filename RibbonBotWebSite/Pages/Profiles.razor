@@ -19,10 +19,10 @@ else
         <MudItem xs="12" sm="12" md="6" lg="4" xl="4" xxl="4">
             <MudPaper Class="pa-16 ma-2" Elevation="3">
                 Ribbons
-                <MudList Clickable="true">
+                <MudList T="string" Clickable="true">
                     @foreach (var user in users)
                     {
-                        <MudListItem Text="@(user)" OnClick="@(() => _navManager.NavigateTo("/profile/" + user))" />
+                        <MudListItem T="string" Text="@(user)" OnClick="@(() => _navManager.NavigateTo("/profile/" + user))" />
                     }
                 </MudList>
             </MudPaper>
@@ -30,10 +30,10 @@ else
         <MudItem xs="12" sm="12" md="6" lg="4" xl="4" xxl="4">
             <MudPaper Class="pa-16 ma-2" Elevation="3">
                 Pets
-                <MudList Clickable="true">
+                <MudList T="string" Clickable="true">
                     @foreach (var user in users)
                     {
-                        <MudListItem Text="@(user)" OnClick="@(() => _navManager.NavigateTo("/profile/" + user + "/pets"))" />
+                        <MudListItem T="string" Text="@(user)" OnClick="@(() => _navManager.NavigateTo("/profile/" + user + "/pets"))" />
                     }
                 </MudList>
             </MudPaper>

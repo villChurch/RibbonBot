@@ -1,11 +1,12 @@
-using Auth0.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using MudBlazor.Services;
 using RibbonBotDAL.Data;
 using RibbonBotDAL.DbAccess;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#if !DEBUG 
+builder.Configuration.AddJsonFile("appSettings.json");
+#endif
 
 // Add services to the container.
 builder.Services.AddRazorPages();
