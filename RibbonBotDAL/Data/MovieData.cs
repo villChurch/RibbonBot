@@ -1,6 +1,5 @@
 ﻿using RibbonBotDAL.DbAccess;
 using RibbonBotDAL.Model;
-using Dapper.Contrib.Extensions;
 
 namespace RibbonBotDAL.Data
 {

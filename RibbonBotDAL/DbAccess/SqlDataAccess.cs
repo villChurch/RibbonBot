@@ -2,7 +2,6 @@
 using Npgsql;
 using Dapper;
 using System.Data;
-using Dapper.Contrib.Extensions;
 
 namespace RibbonBotDAL.DbAccess
 {
