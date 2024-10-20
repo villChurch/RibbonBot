@@ -12,7 +12,7 @@
         <MudButton OnClick="RandomMovie" Variant="Variant.Filled" Color="Color.Primary">Random Movie</MudButton>
     </MudItem>
     <MudItem xs="6">
-        <MudSwitch T="bool" @bind-Checked="_afterDark" Label="After Dark" Color="Color.Success"/>
+        <MudSwitch T="bool" @bind-Value="_afterDark" Label="After Dark" Color="Color.Success"/>
     </MudItem>
 </MudGrid>
 
@@ -58,13 +58,10 @@ else
         var movieList = new List<Movies>();
         foreach (var movie in movies)
         {
-            if (movie.genre is null)
-            {
-                movie.genre = "Community";
-            }
+            movie.genre ??= "Community";
             movieList.Add(movie);
         }
-        movieList = movieList.Where(x => x.watched == false && x.genre?.Equals("After Dark", StringComparison.CurrentCultureIgnoreCase) == _afterDark).ToList();
+        movieList = movieList.Where(x => x.watched == false && x.genre?.Contains("After Dark", StringComparison.CurrentCultureIgnoreCase) == _afterDark).ToList();
         if (movieList.Count < 1)
         {
             Snackbar.Add("There are no movies", Severity.Warning);
