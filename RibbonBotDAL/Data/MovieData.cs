@@ -45,8 +45,8 @@ namespace RibbonBotDAL.Data
         {
             try
             {
-                await _db.SaveData("update eponaRibbon.movies set movie = @movie, watched = @watched where id = @id",
-                    new { movie.movie, movie.watched, movie.id });
+                await _db.SaveData("update eponaRibbon.movies set movie = @movie, watched = @watched, genre = @genre where id = @id",
+                    new { movie.movie, movie.watched, movie.genre, movie.id });
                 return true;
             } catch (Exception e)
             {

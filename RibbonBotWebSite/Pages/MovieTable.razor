@@ -28,7 +28,14 @@
             <MudTextField @bind-Value="@context.movie" Required />
         </MudTd>
         <MudTd DataLabel="Watched">
-            <MudCheckBox T="bool" @bind-Checked="@context.watched"/>
+            <MudCheckBox T="bool" @bind-Value="@context.watched"/>
+        </MudTd>
+        <MudTd DataLabel="Genre">
+            <MudSelect T="string" @bind-Value="@context.genre" Label="Genre">
+                <MudSelectItem T="string" Value="@("Community")">Community</MudSelectItem>
+                <MudSelectItem T="string" Value="@("After Dark")">After Dark</MudSelectItem>
+            </MudSelect>
+            @* <MudTextField T="string" @bind-Value="@context.genre"/> *@
         </MudTd>
     </RowEditingTemplate>
     <PagerContent>
@@ -43,10 +50,10 @@
     </PagerContent>
 </MudTable>
 <div class="d-flex flex-wrap mt-4">
-    <MudSwitch T="bool" @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
-    <MudSwitch T="bool" @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
-    <MudSwitch T="bool" @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
-    <MudSwitch T="bool" @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    <MudSwitch T="bool" @bind-Value="@hover" Color="Color.Primary">Hover</MudSwitch>
+    <MudSwitch T="bool" @bind-Value="@dense" Color="Color.Secondary">Dense</MudSwitch>
+    <MudSwitch T="bool" @bind-Value="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+    <MudSwitch T="bool" @bind-Value="@bordered" Color="Color.Warning">Bordered</MudSwitch>
     <MudSpacer />
 </div>
 
@@ -64,8 +71,8 @@
     private Movies movieBeforeEdit;
     private HashSet<Movies> selectedItems = new HashSet<Movies>();
 
-    private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.End;
-    private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
+    private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.Start;
+    private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.Start;
     private TableEditTrigger editTrigger = TableEditTrigger.RowClick;
 
 
