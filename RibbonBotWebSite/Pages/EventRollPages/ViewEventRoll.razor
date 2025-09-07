@@ -1,0 +1,29 @@
+﻿@page "/eventRolls/{id:long}"
+@inject IEventRollData eventRollData
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm ReadOnly="true">
+                <MudTextField T="string" Label="Event Name" bind-Value="@_eventRoll.Event"/>
+                <MudTextField T="string" Label="Event Type" bind-Value="@_eventRoll.eventtype"/>
+                <MudTextField T="string" Label="Output" bind-Value="@_eventRoll.eventoutput"/>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    [Parameter]
+    public long id { get; set; } = 1;
+
+    EventRoll _eventRoll = new EventRoll();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allEvents = await eventRollData.GetEventRolls();
+        _eventRoll = allEvents.FirstOrDefault(x => x.id == id) ?? new EventRoll();
+    }
+
+}

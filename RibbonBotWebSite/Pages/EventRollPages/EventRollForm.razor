@@ -1,0 +1,58 @@
+﻿<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+                <MudTextField @ref="eventName" T="string" Label="Event Name" Required="true"/>
+                <MudTextField @ref="eventType" T="string" Label="Event Type" Required="true"/>
+                <MudTextField @ref="eventOutput" T="string" Label="Output" Required="true"/>
+            </MudForm>
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(submit)">@(ButtonText)</MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+@code {
+    [Parameter]
+    public EventCallback<EventRoll> OnSubmit { get; set; }
+    [Parameter]
+    public EventRoll? currentEventRoll { get; set; }
+
+    [Parameter] public string ButtonText { get; set; } = "Create Event Roll";
+
+    bool success;
+    string[] errors = { };
+    MudForm form;
+
+    private MudTextField<string> eventName;
+    private MudTextField<string> eventType;
+    private MudTextField<string> eventOutput;
+
+    private async void submit()
+    {
+        var eventRoll = new EventRoll
+        {
+            Event = eventName.Value ?? string.Empty,
+            eventoutput = eventOutput.Value ?? string.Empty,
+            eventtype = eventType.Value ?? string.Empty
+        };
+        await OnSubmit.InvokeAsync(eventRoll);
+    }
+
+    public void SetFormValues(string name, string type, string output)
+    {
+        eventName.SetText(name);
+        eventOutput.SetText(output);
+        eventType.SetText(type);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (currentEventRoll != null)
+        {
+            SetFormValues(currentEventRoll.Event ?? "No name found", currentEventRoll.eventtype ?? "No type found",
+                currentEventRoll.eventoutput ?? "No output found");
+        }
+    }
+
+}

@@ -1,0 +1,146 @@
+﻿@page "/eventRolls/view"
+@inject ISnackbar snackbar
+@inject IEventRollData eventRollData
+@inject IUserData userData;
+@inject IHttpContextAccessor httpContextAccessor
+
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <MudTable Items="@events" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<EventRoll, bool>(FilterFunc1)" ReadOnly="@readOnly"
+              @bind-SelectedItem="selectedItem1" CommitEditTooltip="Save Changes" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+              CanCancelEdit="true" RowEditCommit="Save" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition"
+              EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Movies</MudText>
+            <MudSpacer/>
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel SortBy="new Func<EventRoll, object>(x => x.id)">ID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<EventRoll, object>(x => x.Event)">Event</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<EventRoll, object>(x => x.eventtype)">Type</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<EventRoll, object?>(x => x.eventoutput)">Output</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="ID">@context.id</MudTd>
+            <MudTd DataLabel="Event">@context.Event</MudTd>
+            <MudTd DataLabel="Type">@context.eventtype</MudTd>
+            <MudTd DataLabel="Output">@context.eventoutput</MudTd>
+        </RowTemplate>
+        <RowEditingTemplate>
+            <MudTd DataLabel="ID">@context.id</MudTd>
+            <MudTd DataLabel="Event">
+                <MudTextField @bind-Value="@context.Event" Required/>
+            </MudTd>
+            <MudTd DataLabel="Type">
+                <MudTextField @bind-value="@context.eventtype" Required/>
+            </MudTd>
+            <MudTd DataLabel="Output">
+                <MudTextField @bind-value="@context.eventoutput" Required/>
+                @* <MudTextField T="string" @bind-Value="@context.genre"/> *@
+            </MudTd>
+        </RowEditingTemplate>
+        <PagerContent>
+            @if (events != null)
+            {
+                <MudTablePager PageSizeOptions="@(new int[] { events.Count(), 10, 50, 100 })"/>
+            }
+            else
+            {
+                <MudTablePager HideRowsPerPage="true"/>
+            }
+        </PagerContent>
+    </MudTable>
+    <div class="d-flex flex-wrap mt-4">
+        <MudSwitch T="bool" @bind-Value="@hover" Color="Color.Primary">Hover</MudSwitch>
+        <MudSwitch T="bool" @bind-Value="@dense" Color="Color.Secondary">Dense</MudSwitch>
+        <MudSwitch T="bool" @bind-Value="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+        <MudSwitch T="bool" @bind-Value="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+        <MudSpacer/>
+    </div>
+}
+else
+{
+    <MudText Typo="Typo.h4">You are not authorized to view all event rolls.</MudText>
+}
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+
+    private User? _user;
+    
+    [Parameter]
+    public bool readOnly { get; set; } = false;
+
+    private string searchString1 = "";
+    private EventRoll selectedItem1 = null;
+    private EventRoll eventRollBeforeEdit;
+    private HashSet<EventRoll> selectItems = new();
+
+    private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.Start;
+    private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.Start;
+    private TableEditTrigger editTrigger = TableEditTrigger.RowClick;
+
+    private IEnumerable<EventRoll>? events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await eventRollData.GetEventRolls();
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString() ?? "";
+        }
+        if (email.Length > 0)
+        {
+            _user = await userData.CheckForUser(userData, email);
+        }
+    }
+
+    private bool FilterFunc1(EventRoll eventT) => FilterFunc(eventT, searchString1);
+
+    private bool FilterFunc(EventRoll eventT, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (eventT.Event.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (eventT.eventtype.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+    public async void Refresh()
+    {
+        events = await eventRollData.GetEventRolls();
+        StateHasChanged();
+    }
+
+    public async void Save(object eventRoll)
+    {
+        var eventToSave = (EventRoll)eventRoll;
+        await eventRollData.UpdateEventRoll(eventToSave);
+        snackbar.Add($"Updated event with id - {eventToSave.id}", Severity.Success);
+    } 
+    
+    private void BackupItem(object eventRoll) {
+        eventRollBeforeEdit = new EventRoll()
+        {
+            eventtype = ((EventRoll)eventRoll).eventtype,
+            eventoutput = ((EventRoll)eventRoll).eventoutput,
+            Event = ((EventRoll)eventRoll).Event,
+            id = ((EventRoll)eventRoll).id
+        };
+    }
+    
+    private async void ResetItemToOriginalValues(object eventRoll) {
+        ((EventRoll)eventRoll).eventtype = eventRollBeforeEdit.eventtype;
+        ((EventRoll)eventRoll).Event = eventRollBeforeEdit.Event;
+        ((EventRoll)eventRoll).eventoutput = eventRollBeforeEdit.eventoutput;
+        ((EventRoll)eventRoll).id = eventRollBeforeEdit.id;
+    }
+
+}

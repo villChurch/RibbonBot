@@ -1,0 +1,40 @@
+﻿@page "/eventRolls/add"
+@inject IEventRollData eventRollData
+@inject IUserData userData
+@inject IHttpContextAccessor httpContextAccessor;
+@inject ISnackbar snackbar;
+
+@if (_user is not null && _user.role.ToLower().Equals("admin"))
+{
+    <EventRollForm OnSubmit="HandleValidSubmit" />
+}
+else
+{
+    <MudText Typo="Typo.h4">You are not authroized to add event rolls.</MudText>
+}
+
+@code {
+
+    private User? _user;
+
+    private async void HandleValidSubmit(EventRoll eventRoll)
+    { 
+        await eventRollData.SaveEventRoll(eventRoll);
+        snackbar.Add("Event roll saved", Severity.Success);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var email = "";
+        if (httpContextAccessor.HttpContext != null)
+        {
+            email = httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Email"].ToString();
+        }
+
+        if (email.Length > 0)
+        {
+            _user = await userData.CheckForUser(userData, email);
+        }
+    }
+
+}

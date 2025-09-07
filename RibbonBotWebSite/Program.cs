@@ -1,4 +1,7 @@
 using MudBlazor.Services;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
 using RibbonBotDAL.Data;
 using RibbonBotDAL.DbAccess;
 
@@ -19,7 +22,27 @@ builder.Services.AddSingleton<IUserRibbonData, UserRibbonData>();
 builder.Services.AddSingleton<IPetsData, PetsData>();
 builder.Services.AddSingleton<IUserData, UserData>();
 builder.Services.AddSingleton<IUserLinkData, UserLinkData>();
+builder.Services.AddSingleton<IEventRollData, EventRollData>();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddLogging(logging => logging.AddOpenTelemetry(otlo =>
+{
+    otlo.SetResourceBuilder(ResourceBuilder.CreateEmpty()
+        .AddService("Ribbon Bot Website")
+        .AddAttributes(new Dictionary<string, object>
+        {
+            ["deployment.environment"] = "development"
+        }));
+    otlo.IncludeScopes = true;
+    otlo.IncludeFormattedMessage = true;
+
+    otlo.AddOtlpExporter(export =>
+    {
+        export.Endpoint = new Uri("http://localhost:5341/ingest/otlp/v1/logs");
+        export.Protocol = OtlpExportProtocol.HttpProtobuf;
+        // export.Headers = 
+    });
+}));
 
 var app = builder.Build();
 
