@@ -30,13 +30,13 @@
         <RowEditingTemplate>
             <MudTd DataLabel="ID">@context.id</MudTd>
             <MudTd DataLabel="Event">
-                <MudTextField @bind-Value="@context.Event" Required/>
+                <MudTextField T="string" @bind-Value="@context.Event" Required/>
             </MudTd>
             <MudTd DataLabel="Type">
-                <MudTextField @bind-value="@context.eventtype" Required/>
+                <MudTextField T="string" @bind-value="@context.eventtype" Required/>
             </MudTd>
             <MudTd DataLabel="Output">
-                <MudTextField @bind-value="@context.eventoutput" Required/>
+                <MudTextField T="string" @bind-value="@context.eventoutput" Required/>
                 @* <MudTextField T="string" @bind-Value="@context.genre"/> *@
             </MudTd>
         </RowEditingTemplate>
