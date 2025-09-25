@@ -1,30 +1,33 @@
 pipeline {
-    agent any
+    agent {
+        label 'linux'
+    }
 
     environment {
         BUILD_DIR = 'build_output'
     }
 
     stages {
-        stage('Restore NuGet Packages') {
+
+        stage('Restore Dependencies') {
             steps {
-                bat 'nuget restore RibbonBot.sln'
+                sh 'dotnet restore RibbonBot.sln'
             }
         }
 
         stage('Build') {
             steps {
-                bat "msbuild RibbonBot.sln /p:OutDir=${BUILD_DIR}\\ /p:Configuration=Release"
+                sh "dotnet build RibbonBot.sln --configuration Release --output ${BUILD_DIR}"
             }
         }
     }
 
     post {
         success {
-            echo "Build completed successfully. Output is in ${BUILD_DIR}"
+            echo "✅ Build and tests completed successfully. Output is in ${BUILD_DIR}"
         }
         failure {
-            echo "Build failed."
+            echo "❌ Build or tests failed."
         }
     }
 }
