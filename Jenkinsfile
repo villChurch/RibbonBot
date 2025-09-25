@@ -21,7 +21,7 @@ pipeline {
                 // Get the short commit hash
                 script {
                     def commitHash = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
-                    sh "cd RibbonBotWebsite"
+                    sh "~/workspace/RB_Website_main/RibbonBotWebSite"
                     sh "docker build . -t ribbon_bot-website:${commitHash}"
                 }
                 // sh "cp RibbonBotWebSite/Dockerfile ${BUILD_DIR}"
