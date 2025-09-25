@@ -20,7 +20,7 @@ pipeline {
                 // sh "dotnet build RibbonBot.sln --configuration Release --output ${BUILD_DIR}"
                 // Get the short commit hash
                 script {
-                    dir('RibbonBotWebsite') {
+                    dir('RibbonBotWebSite') {
                         def commitHash = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
                         sh "docker build . -t ribbon_bot-website:${commitHash}"
                     }
