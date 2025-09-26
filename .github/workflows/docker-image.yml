@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: cp RibbonBotWebSite/Dockerfile . && docker build . --file Dockerfile --tag ribbon_bot-website:$(date +%s)
+      run: cp RibbonBotWebSite/Dockerfile . && sudo docker build . --file Dockerfile --tag ribbon_bot-website:$(date +%s)
