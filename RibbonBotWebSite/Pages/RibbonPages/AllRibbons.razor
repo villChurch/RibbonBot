@@ -1,9 +1,9 @@
 ﻿@page "/Ribbon/all"
 @inject IRibbonData ribbonData
 @inject NavigationManager navigationManager
-@inject IUserData UserData
+@inject IUserData userData
 @inject IHttpContextAccessor httpContextAccessor;
-@inject JSRuntime JSRuntime;
+@inject IJSRuntime jsRuntime;
 
 @if (_user is not null && _user.role.ToLower().Equals("admin"))
 {
@@ -68,7 +68,7 @@ else
         }
         if (email.Length > 0)
         {
-            _user = await UserData.CheckForUser(UserData, email);
+            _user = await userData.CheckForUser(userData, email);
         }
     }
 
@@ -94,7 +94,7 @@ else
         }
         else
         {
-            JSRuntime.InvokeAsync<object>("open", $"/ribbon/{tableRowClickEventArgs.Item.id}", "_blank");
+            jsRuntime.InvokeAsync<object>("open", $"/ribbon/{tableRowClickEventArgs.Item.id}", "_blank");
         }
     }
 }
