@@ -3,9 +3,14 @@
 @inject NavigationManager navigationManager
 @inject IUserData UserData
 @inject IHttpContextAccessor httpContextAccessor;
+@inject JSRuntime JSRuntime;
 
 @if (_user is not null && _user.role.ToLower().Equals("admin"))
 {
+    <MudGrid>
+        <MudSwitch @bind-Value="_newTab" Color="Color.Primary" T="bool">Open pages in new Tab</MudSwitch>
+    </MudGrid>
+    <MudSpacer/>
     <MudTable Items="@Elements" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<Ribbon, bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1"
               OnRowClick="@RowClicked" T="Ribbon">
         <ToolBarContent>
@@ -48,6 +53,7 @@ else
     private string searchString1 = "";
     private Ribbon selectedItem1;
     private HashSet<Ribbon> selectedItems = new();
+    private bool _newTab = false;
     private User? _user;
 
     private IEnumerable<Ribbon> Elements = new List<Ribbon>();
@@ -81,6 +87,14 @@ else
 
     private void RowClicked(TableRowClickEventArgs<Ribbon> tableRowClickEventArgs)
     {
-        navigationManager.NavigateTo("/ribbon/" + tableRowClickEventArgs.Item.id);
+        if (tableRowClickEventArgs?.Item is null) return;
+        if (!_newTab)
+        {
+            navigationManager.NavigateTo($"/ribbon/{tableRowClickEventArgs.Item.id}");
+        }
+        else
+        {
+            JSRuntime.InvokeAsync<object>("open", $"/ribbon/{tableRowClickEventArgs.Item.id}", "_blank");
+        }
     }
 }
