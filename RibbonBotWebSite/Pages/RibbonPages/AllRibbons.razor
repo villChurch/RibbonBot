@@ -3,7 +3,7 @@
 @inject NavigationManager navigationManager
 @inject IUserData userData
 @inject IHttpContextAccessor httpContextAccessor;
-@inject IJSRuntime jsRuntime;
+@inject IJSRuntime JSRuntime;
 
 @if (_user is not null && _user.role.ToLower().Equals("admin"))
 {
@@ -94,7 +94,7 @@ else
         }
         else
         {
-            jsRuntime.InvokeAsync<object>("open", $"/ribbon/{tableRowClickEventArgs.Item.id}", "_blank");
+            JSRuntime.InvokeAsync<object>("open", $"/ribbon/{tableRowClickEventArgs.Item.id}", "_blank");
         }
     }
 }
